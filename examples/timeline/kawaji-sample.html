@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Timeline</title>
+    <script src="../../standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="../../styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        #visualization {
+            width: 1280px;
+            height: 400px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="visualization"></div>
+    <script type="text/javascript">
+        // DOM element where the Timeline will be attached
+        var container = document.getElementById('visualization');
+
+        // Create a DataSet (allows two way data-binding)
+        var items = new vis.DataSet([
+            { id: 1, content: 'item 1', start: '2020-04-20', end: '2020-04-29', type: 'range', group: 1 },
+            { id: 2, content: 'item 2', start: '2020-04-14', end: '2020-04-29', type: 'range', group: 2 },
+            { id: 3, content: '2h/d', start: '2020-04-18', end: '2020-04-29', type: 'range', group: 3 },
+            { id: 4, content: 'item 4', start: '2020-04-16', end: '2020-04-29', type: 'range', group: 4 },
+            { id: 5, content: 'item 5', start: '2020-04-25', end: '2020-04-29', group: 5 },
+            { id: 7, content: '13h/d', start: '2020-04-1', end: '2020-04-29', type: 'range', group: 6 },
+            { id: 8, content: '2h/d', start: '2020-04-01', end: '2020-04-02', type: 'range', group: 3 },
+        ]);
+
+        var groups = [
+            {
+                id: 1,
+                content: '天候',
+                treeLevel: 2,
+                nestedGroups: [2],
+                value: 1
+            },
+            {
+                id: 2,
+                treeLevel: 3,
+                content: '本番',
+                nestedGroups: [5],
+                value: 2
+            },
+            {
+                id: 3,
+                treeLevel: 5,
+                content: '川路',
+                value: 3
+            },
+            {
+                id: 4,
+                content: '2019',
+                nestedGroups: [1],
+                value: 4
+            },
+            {
+                id: 5,
+                treeLevel: 4,
+                content: '教師付け',
+                nestedGroups: [3, 6],
+                value: 5
+            },
+            {
+                id: 6,
+                treeLevel: 5,
+                content: '稲葉',
+                value: 6
+            },
+            {
+                id: 7,
+                content: '2020',
+                value: 7
+            }
+        ];
+
+        // Configuration for the Timeline
+        var options = {
+            locale: 'ja',
+            groupEditable: true,
+            editable: true,
+
+            // option groupOrder can be a property name or a sort function
+            // the sort function must compare two groups and return a value
+            //     > 0 when a > b
+            //     < 0 when a < b
+            //       0 when a == b
+            groupOrder: function (a, b) {
+                // console.log("groupOrder a:" + a.value + " b:" + b.value);
+                return a.value - b.value;
+            },
+            groupOrderSwap: function (a, b, groups) {
+                console.log("groupOrderSwap a:" + a.value + " b:" + b.value);
+
+                if (a.treeLevel != b.treeLevel) {
+                    return;
+                }
+                //test
+                var v = a.value;
+                a.value = b.value;
+                b.value = v;
+            },
+            // groupTemplate: function (group) {
+            //     var container = document.createElement('div');
+            //     var label = document.createElement('span');
+            //     label.innerHTML = group.content + ' ';
+            //     container.insertAdjacentElement('afterBegin', label);
+            //     var hide = document.createElement('button');
+            //     hide.innerHTML = 'hide';
+            //     hide.style.fontSize = 'small';
+            //     hide.addEventListener('click', function () {
+            //         groups.update({id: group.id, visible: false});
+            //     });
+            //     container.insertAdjacentElement('beforeEnd', hide);
+            //     return container;
+            // },
+            orientation: 'both'
+        };
+
+        function showAllGroups() {
+            groups.forEach(function (group) {
+                groups.update({ id: group.id, visible: true });
+            });
+        }
+
+        // Create a Timeline
+        var timeline = new vis.Timeline(container, items, groups, options);
+    </script>
+</body>
+
+</html>
