@@ -16,6 +16,8 @@
 </head>
 
 <body>
+    <input type="button" id="day" value="day" />
+    <input type="button" id="week" value="week" />
     <div id="visualization"></div>
     <script type="text/javascript">
         // DOM element where the Timeline will be attached
@@ -83,7 +85,10 @@
         var options = {
             locale: 'ja',
             groupEditable: true,
-            editable: true,
+            editable: {
+                add: false, //ダブルクリックでのItem追加禁止
+                updateTime: true    //Itemの移動許可
+            },
 
             // option groupOrder can be a property name or a sort function
             // the sort function must compare two groups and return a value
@@ -119,7 +124,10 @@
             //     container.insertAdjacentElement('beforeEnd', hide);
             //     return container;
             // },
-            orientation: 'both'
+            orientation: 'both',
+            zoomable: false,
+            zoomMin: 1000 * 60 * 60 * 24,
+            zoomMax: 1000 * 60 * 60 * 24 * 7,
         };
 
         function showAllGroups() {
